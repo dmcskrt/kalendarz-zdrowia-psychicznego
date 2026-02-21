@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#2d7a7a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description"
+    content="Interaktywny kalendarz dni zdrowia psychicznego 2025 z trybem offline, ulubionymi wydarzeniami i eksportem do kalendarza.">
+  <title>Kalendarz Dni Zdrowia Psychicznego 2025</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --teal: #2d7a7a;
+      --teal-light: #3d9e9e;
+      --teal-pale: #e8f5f5;
+      --sage: #7aaa8a;
+      --cream: #faf8f4;
+      --warm-dark: #1e2c2c;
+      --warm-mid: #3d5252;
+      --mist: #c8dcdc;
+      --gold: #c9a84c;
+      --rose: #c97a7a;
+      --lavender: #8a7aaa;
+      --accent-teal: #1a9090;
+      --shadow: rgba(30, 44, 44, 0.08);
+      --card-bg: #ffffff;
+    }
+
+    /* Dark mode variables */
+    [data-theme="dark"] {
+      --cream: #1a1f1f;
+      --warm-dark: #e8f0f0;
+      --warm-mid: #b8c8c8;
+      --mist: #3a4a4a;
+      --card-bg: #242b2b;
+      --teal-pale: #1e3a3a;
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--warm-dark);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--warm-dark);
+      padding: 48px 24px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+
+    [data-theme="dark"] .header {
+      background: #0f1414;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45, 122, 122, 0.35) 0%, transparent 70%);
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: 20%;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(122, 170, 138, 0.25) 0%, transparent 70%);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--teal-light);
+    }
+
+    .theme-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--mist);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      backdrop-filter: blur(10px);
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 5vw, 46px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .header h1 em {
+      font-style: italic;
+      color: var(--mist);
+    }
+
+    .header-sub {
+      font-size: 14px;
+      color: var(--mist);
+      font-weight: 300;
+      line-height: 1.6;
+      max-width: 560px;
+      opacity: 0.85;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 22px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 40px;
+      padding: 7px 16px;
+      font-size: 12px;
+      color: var(--mist);
+      font-weight: 400;
+    }
+
+    .header-badge span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sage);
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+      }
+    }
+
+    /* CONTROLS */
+    .controls-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--cream);
+      transition: background 0.3s;
+      border-bottom: 1px solid var(--mist);
+    }
+
+    [data-theme="dark"] .controls-wrapper {
+      border-bottom-color: var(--warm-mid);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 340px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--warm-mid);
+      opacity: 0.5;
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 14px 12px 40px;
+      border: 1.5px solid var(--mist);
+      border-radius: 10px;
+      background: var(--card-bg);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--warm-dark);
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px var(--teal-pale);
+    }
+
+    [data-theme="dark"] .search-input:focus {
+      box-shadow: 0 0 0 3px rgba(45, 122, 122, 0.3);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .tab-btn,
+    .tag-btn {
+      padding: 8px 16px;
+      border: 1.5px solid var(--mist);
+      border-radius: 20px;
+      background: var(--card-bg);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--warm-mid);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      touch-action: manipulation;
+    }
+
+    .tab-btn:hover,
+    .tag-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+      transform: translateY(-1px);
+    }
+
+    .tab-btn.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #fff;
+    }
+
+    .tag-btn.active.tag-world {
+      background: #3060c0;
+      border-color: #3060c0;
+      color: #fff;
+    }
+
+    .tag-btn.active.tag-pl {
+      background: #307840;
+      border-color: #307840;
+      color: #fff;
+    }
+
+    .tag-btn.active.tag-prof {
+      background: #906010;
+      border-color: #906010;
+      color: #fff;
+    }
+
+    .tag-btn.active.tag-eu {
+      background: #c03060;
+      border-color: #c03060;
+      color: #fff;
+    }
+
+    .tab-btn.all-btn {
+      border-color: var(--warm-dark);
+      color: var(--warm-dark);
+    }
+
+    [data-theme="dark"] .tab-btn.all-btn {
+      border-color: var(--warm-mid);
+      color: var(--warm-mid);
+    }
+
+    .tab-btn.all-btn.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #fff;
+    }
+
+    /* Favorites button */
+    .fav-btn {
+      background: var(--teal-pale);
+      border: 1.5px solid var(--teal);
+      color: var(--teal);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .fav-btn:hover {
+      background: var(--teal);
+      color: white;
+    }
+
+    .fav-btn.active {
+      background: var(--teal);
+      color: white;
+    }
+
+    /* STATS */
+    .stats-bar {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--warm-mid);
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-pill strong {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--teal);
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+    }
+
+    /* DESKTOP TABLE VIEW */
+    .desktop-view {
+      display: block;
+    }
+
+    .month-section {
+      margin-bottom: 40px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .month-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .month-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--mist);
+      line-height: 1;
+      min-width: 52px;
+      text-align: right;
+    }
+
+    .month-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--warm-dark);
+    }
+
+    .month-count {
+      margin-left: auto;
+      background: var(--teal-pale);
+      color: var(--teal);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .month-divider {
+      height: 1.5px;
+      background: linear-gradient(to right, var(--teal), var(--mist), transparent);
+      margin-bottom: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px var(--shadow);
+      transition: background 0.3s;
+    }
+
+    thead tr {
+      background: var(--warm-dark);
+    }
+
+    [data-theme="dark"] thead tr {
+      background: #2a3535;
+    }
+
+    thead th {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--mist);
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    thead th:first-child {
+      width: 40px;
+      text-align: center;
+    }
+
+    thead th:nth-child(2) {
+      width: 120px;
+    }
+
+    thead th:nth-child(3) {
+      width: 200px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--mist);
+      transition: all 0.15s ease;
+    }
+
+    [data-theme="dark"] tbody tr {
+      border-bottom-color: var(--warm-mid);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: var(--teal-pale);
+      transform: scale(1.002);
+    }
+
+    [data-theme="dark"] tbody tr:hover {
+      background: rgba(45, 122, 122, 0.2);
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      vertical-align: top;
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    td.lp {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--mist);
+      vertical-align: middle;
+    }
+
+    td.date-cell {
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .date-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .date-text {
+      font-weight: 600;
+      color: var(--warm-dark);
+      font-size: 13px;
+    }
+
+    td.name-cell {
+      font-weight: 500;
+      color: var(--warm-dark);
+      vertical-align: middle;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .tag-world {
+      background: #e8f0fd;
+      color: #3060c0;
+    }
+
+    .tag-eu {
+      background: #fdeef0;
+      color: #c03060;
+    }
+
+    .tag-pl {
+      background: #eef8e8;
+      color: #307840;
+    }
+
+    .tag-prof {
+      background: #fdf5e0;
+      color: #906010;
+    }
+
+    [data-theme="dark"] .tag-world {
+      background: rgba(48, 96, 192, 0.3);
+      color: #a8c0f0;
+    }
+
+    [data-theme="dark"] .tag-eu {
+      background: rgba(192, 48, 96, 0.3);
+      color: #f0a8c0;
+    }
+
+    [data-theme="dark"] .tag-pl {
+      background: rgba(48, 120, 64, 0.3);
+      color: #a8f0b8;
+    }
+
+    [data-theme="dark"] .tag-prof {
+      background: rgba(144, 96, 16, 0.3);
+      color: #f0d8a8;
+    }
+
+    td.desc-cell {
+      color: var(--warm-mid);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    tr.highlight td.name-cell {
+      color: var(--teal);
+      font-weight: 600;
+    }
+
+    tr.highlight td.lp {
+      color: var(--teal);
+    }
+
+    /* Action buttons in table */
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    tr:hover .row-actions {
+      opacity: 1;
+    }
+
+    .icon-btn {
+      background: none;
+      border: 1px solid var(--mist);
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--warm-mid);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: var(--teal-pale);
+    }
+
+    .icon-btn.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+
+    /* MOBILE CARDS VIEW */
+    .mobile-view {
+      display: none;
+    }
+
+    .event-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px var(--shadow);
+      border: 1px solid var(--mist);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .event-card {
+      border-color: var(--warm-mid);
+    }
+
+    .event-card:active {
+      transform: scale(0.98);
+    }
+
+    .event-card.expanded {
+      box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+
+    .card-date {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--teal);
+      font-size: 14px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--warm-dark);
+      line-height: 1.3;
+      margin-bottom: 8px;
+      padding-right: 40px;
+    }
+
+    .card-tags {
+      margin-bottom: 12px;
+    }
+
+    .card-desc {
+      color: var(--warm-mid);
+      font-size: 13.5px;
+      line-height: 1.6;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, margin 0.3s;
+    }
+
+    .event-card.expanded .card-desc {
+      max-height: 500px;
+      margin-top: 12px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--mist);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    [data-theme="dark"] .card-actions {
+      border-top-color: var(--warm-mid);
+    }
+
+    .event-card.expanded .card-actions {
+      opacity: 1;
+      max-height: 100px;
+    }
+
+    .card-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1.5px solid var(--mist);
+      background: transparent;
+      color: var(--warm-mid);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .card-btn.primary {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+
+    .card-btn.active {
+      background: var(--teal-pale);
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .expand-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--teal-pale);
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: transform 0.3s;
+    }
+
+    .event-card.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    /* EMPTY STATE */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--warm-mid);
+      display: none;
+    }
+
+    .no-results.show {
+      display: block;
+    }
+
+    .no-results p {
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
+    /* TOAST NOTIFICATIONS */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--warm-dark);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideIn 0.3s ease;
+      pointer-events: all;
+      max-width: 300px;
+    }
+
+    [data-theme="dark"] .toast {
+      background: var(--card-bg);
+      border: 1px solid var(--warm-mid);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast.hiding {
+      animation: slideOut 0.3s ease forwards;
+    }
+
+    @keyframes slideOut {
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    /* FAVORITES MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 20px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--mist);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--warm-mid);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--teal-pale);
+      color: var(--teal);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .fav-item {
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: all 0.2s;
+    }
+
+    [data-theme="dark"] .fav-item {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .fav-item:hover {
+      transform: translateX(4px);
+    }
+
+    .fav-date {
+      background: var(--teal);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      min-width: 60px;
+    }
+
+    .fav-content {
+      flex: 1;
+    }
+
+    .fav-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--warm-dark);
+    }
+
+    .fav-remove {
+      background: none;
+      border: none;
+      color: var(--rose);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .fav-remove:hover {
+      background: rgba(201, 122, 122, 0.1);
+    }
+
+    .empty-favs {
+      text-align: center;
+      padding: 40px;
+      color: var(--warm-mid);
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: var(--warm-mid);
+      border-top: 1px solid var(--mist);
+      margin-top: 40px;
+    }
+
+    /* PRINT STYLES */
+    @media print {
+
+      .controls-wrapper,
+      .theme-toggle,
+      .row-actions,
+      .card-actions,
+      .toast-container,
+      .modal-overlay,
+      .fav-btn {
+        display: none !important;
+      }
+
+      .mobile-view {
+        display: none !important;
+      }
+
+      .desktop-view {
+        display: block !important;
+      }
+
+      .month-section {
+        break-inside: avoid;
+      }
+
+      body {
+        background: white !important;
+        color: black !important;
+      }
+
+      table {
+        box-shadow: none !important;
+        background: white !important;
+      }
+
+      .header {
+        background: #1e2c2c !important;
+        print-color-adjust: exact;
+      }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .desktop-view {
+        display: none;
+      }
+
+      .mobile-view {
+        display: block;
+      }
+
+      .header {
+        padding: 32px 20px 28px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .controls-wrapper {
+        position: relative;
+        border-bottom: none;
+        padding: 16px;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-wrap {
+        max-width: 100%;
+      }
+
+      .filter-group {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .tab-btn,
+      .tag-btn {
+        flex-shrink: 0;
+      }
+
+      .month-number {
+        font-size: 28px;
+        min-width: 40px;
+      }
+
+      .month-name {
+        font-size: 20px;
+      }
+
+      /* Touch friendly buttons */
+      .tab-btn,
+      .tag-btn,
+      .fav-btn,
+      .icon-btn,
+      .card-btn {
+        min-height: 44px;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Focus visible for accessibility */
+    *:focus-visible {
+      outline: 2px solid var(--teal);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-top">
+        <p class="header-eyebrow">Centrum Zdrowia Psychicznego</p>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Przełącz tryb ciemny">
+          <span id="theme-icon">🌙</span>
+          <span id="theme-text">Tryb ciemny</span>
+        </button>
+      </div>
+      <h1>Kalendarz <em>Świąt i Dni</em><br>Zdrowia Psychicznego</h1>
+      <p class="header-sub">Kompletna lista wydarzeń związanych z psychiatrią i psychologią. Zapisuj wydarzenia,
+        eksportuj do kalendarza i planuj kampanie społeczne.</p>
+      <div class="header-badge">
+        <span class="dot"></span>
+        Rok 2025 · Dostęp offline · Zapisane: <span id="savedCount">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls-wrapper">
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Szukaj po nazwie lub opisie..."
+          autocomplete="off">
+      </div>
+
+      <div class="filter-group" id="monthTabs">
+        <button class="tab-btn all-btn active" onclick="filterMonth('all', this)">Wszystkie</button>
+        <button class="tab-btn" onclick="filterMonth('01', this)">Sty</button>
+        <button class="tab-btn" onclick="filterMonth('02', this)">Lut</button>
+        <button class="tab-btn" onclick="filterMonth('03', this)">Mar</button>
+        <button class="tab-btn" onclick="filterMonth('04', this)">Kwi</button>
+        <button class="tab-btn" onclick="filterMonth('05', this)">Maj</button>
+        <button class="tab-btn" onclick="filterMonth('06', this)">Cze</button>
+        <button class="tab-btn" onclick="filterMonth('07', this)">Lip</button>
+        <button class="tab-btn" onclick="filterMonth('08', this)">Sie</button>
+        <button class="tab-btn" onclick="filterMonth('09', this)">Wrz</button>
+        <button class="tab-btn" onclick="filterMonth('10', this)">Paź</button>
+        <button class="tab-btn" onclick="filterMonth('11', this)">Lis</button>
+        <button class="tab-btn" onclick="filterMonth('12', this)">Gru</button>
+      </div>
+
+      <div class="filter-group">
+        <button class="tag-btn tag-world" onclick="toggleTag('world', this)">🌍 Światowy</button>
+        <button class="tag-btn tag-pl" onclick="toggleTag('pl', this)">🇵🇱 PL</button>
+        <button class="tag-btn tag-prof" onclick="toggleTag('prof', this)">👔 Zawód</button>
+        <button class="fav-btn" onclick="showFavorites()">⭐ Moje dni (<span id="favCount">0</span>)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-pill"><strong id="totalCount">0</strong> wszystkich</div>
+    <div class="stat-pill"><strong id="visibleCount">0</strong> widocznych</div>
+    <div class="stat-pill">·</div>
+    <div class="stat-pill" style="cursor: help"
+      title="Kliknij w wydarzenie, aby zobaczyć szczegóły lub dodać do ulubionych">ℹ️ Kliknij wydarzenie, aby rozwinąć
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main" id="mainContent">
+    <!-- Desktop view -->
+    <div class="desktop-view" id="desktopView"></div>
+
+    <!-- Mobile view -->
+    <div class="mobile-view" id="mobileView"></div>
+  </div>
+
+  <div class="no-results" id="noResults">
+    <div style="font-size:40px">🔍</div>
+    <p>Nie znaleziono pasujących wyników.<br>Spróbuj innej frazy lub filtra.</p>
+    <button class="tab-btn all-btn" style="margin-top: 16px" onclick="resetFilters()">Resetuj filtry</button>
+  </div>
+
+  <!-- FAVORITES MODAL -->
+  <div class="modal-overlay" id="favModal" onclick="closeFavorites(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">⭐ Moje zapisane dni</h2>
+        <button class="modal-close" onclick="closeFavorites()">&times;</button>
+      </div>
+      <div class="modal-body" id="favList">
+        <div class="empty-favs">Nie masz jeszcze zapisanych dni.<br>Kliknij ⭐ przy wydarzeniu, aby dodać.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="footer">
+    <p>Opracowano dla Centrum Zdrowia Psychicznego · Dane: WHO, PTP, PTPsych</p>
+    <p style="margin-top: 8px; font-size: 11px">💡 Wskazówka: Możesz zainstalować tę stronę jako aplikację (ikona ➕ lub
+      📱 w pasku przeglądarki)</p>
+  </div>
+
+  <script>
+    // Data remains the same as original
+    const data = [
+      { month: '01', monthName: 'Styczeń', date: '25 stycznia', sortDate: '01-25', name: 'Dzień Świadomości Zdrowia Psychicznego na Uczelniach', tag: 'world', desc: 'Dzień poświęcony zdrowiu psychicznemu studentów i kadry akademickiej. Świetna okazja do poruszenia tematyki stresu akademickiego, sesji egzaminacyjnej i dostępności pomocy psychologicznej dla młodych dorosłych.', highlight: false },
+      { month: '01', monthName: 'Styczeń', date: '23 stycznia', sortDate: '01-23', name: 'Błękitny Poniedziałek (Blue Monday)', tag: 'world', desc: 'Statystycznie "najsmutniejszy dzień roku" — trzeci poniedziałek stycznia. Choć kontrowersyjny naukowo, stanowi doskonały punkt wyjścia do rozmowy o sezonowych zaburzeniach nastroju (SAD), depresji zimowej i metodach dbania o nastrój w długie, ciemne dni.', highlight: true },
+      { month: '01', monthName: 'Styczeń', date: 'cały miesiąc', sortDate: '01-01', name: 'Krajowy Miesiąc Świadomości na temat Niesienia Pomocy Sobie', tag: 'world', desc: 'Czas na refleksję nad własnym dobrostanem — zachęca do rozwijania umiejętności samopomocy i budowania zdrowych nawyków na nowy rok. Idealne otwarcie roku dla Centrum Zdrowia Psychicznego.', highlight: false },
+      { month: '02', monthName: 'Luty', date: '2 lutego', sortDate: '02-02', name: 'Dzień bez Stresu', tag: 'world', desc: 'Dobry moment na publikację praktycznych porad dotyczących technik relaksacyjnych, zarządzania stresem i mindfulness. Stress Awareness Day to okazja, by pokazać, że dbanie o spokój ducha to codzienną praktyka, a nie luksus.', highlight: false },
+      { month: '02', monthName: 'Luty', date: '4 lutego', sortDate: '02-04', name: 'Światowy Dzień Walki z Rakiem', tag: 'world', desc: 'Choć to dzień onkologiczny, warto podkreślić silny związek między chorobą nowotworową a zdrowiem psychicznym — wsparcie psychoonkologiczne, radzenie sobie z diagnozą i rola psychologa w leczeniu onkologicznym.', highlight: false },
+      { month: '02', monthName: 'Luty', date: '14 lutego', sortDate: '02-14', name: 'Walentynki — Dzień Zdrowia Emocjonalnego w Związkach', tag: 'world', desc: 'Walentynki to idealna okazja do rozmowy o zdrowiu emocjonalnym w relacjach — komunikacji, granicach, miłości własnej (self-love) i wpływie relacji na dobrostan psychiczny. Można nawiązać do terapii par.', highlight: false },
+      { month: '02', monthName: 'Luty', date: 'cały miesiąc', sortDate: '02-01', name: 'Miesiąc Świadomości Zaburzeń Jedzenia', tag: 'world', desc: 'Luty jest miesiącem poświęconym świadomości anoreksji, bulimii, BED i innych zaburzeń odżywiania. Okazja do edukacji na temat wczesnych objawów, dostępnej pomocy i roli środowiska rodzinnego w procesie leczenia.', highlight: true },
+      { month: '03', monthName: 'Marzec', date: '3 marca', sortDate: '03-03', name: 'Światowy Dzień Słyszenia (WHO)', tag: 'world', desc: 'Warto połączyć ten dzień z tematyką psychologiczną — utrata słuchu a izolacja społeczna, depresja u osób niedosłyszących oraz znaczenie komunikacji w zdrowiu psychicznym.', highlight: false },
+      { month: '03', monthName: 'Marzec', date: '8 marca', sortDate: '03-08', name: 'Międzynarodowy Dzień Kobiet', tag: 'world', desc: 'Doskonała okazja do poruszenia tematów zdrowia psychicznego kobiet: depresja poporodowa, wypalenie opiekuńcze, przemoc w związkach, nierówności społeczne a dobrostan psychiczny. Jeden z najważniejszych dni w roku dla treści o specyfice żeńskiej.', highlight: true },
+      { month: '03', monthName: 'Marzec', date: '21 marca', sortDate: '03-21', name: 'Dzień Świadomości Zespołu Downa', tag: 'world', desc: 'Okazja do rozmowy o zdrowiu psychicznym osób z niepełnosprawnościami intelektualnymi oraz ich rodzin i opiekunów. Warto podkreślić rolę wsparcia środowiskowego i terapii.', highlight: false },
+      { month: '03', monthName: 'Marzec', date: '22 marca', sortDate: '03-22', name: 'Dzień bez Papierosa / Dzień Rzucania Palenia', tag: 'pl', desc: 'Palenie tytoniu jest silnie powiązane z zaburzeniami psychicznymi — zarówno jako forma samoleczenia, jak i czynnik ryzyka. Okazja do rozmowy o uzależnieniu jako problemie psychologicznym i metodach wsparcia.', highlight: false },
+      { month: '03', monthName: 'Marzec', date: 'cały miesiąc', sortDate: '03-01', name: 'Miesiąc Świadomości Zaburzeń Obsesyjno-Kompulsyjnych (OCD)', tag: 'world', desc: 'Marzec jest oficjalnie poświęcony świadomości OCD. Wiele osób błędnie rozumie to zaburzenie — dobry czas na edukację, obalanie mitów i informację o metodach leczenia (CBT, ERP, farmakoterapia).', highlight: false },
+      { month: '03', monthName: 'Marzec', date: 'cały miesiąc', sortDate: '03-02', name: 'Miesiąc Świadomości Samookaleczania', tag: 'world', desc: 'Ważna inicjatywa edukacyjna dotycząca niesuicydalnego samookaleczania, jego przyczyn i metod pomocy. Szczególnie istotna tematyka wśród młodzieży. Treści powinny być przygotowane z wrażliwością i zgodnie z zasadami bezpiecznej komunikacji.', highlight: false },
+      { month: '04', monthName: 'Kwiecień', date: '2 kwietnia', sortDate: '04-02', name: 'Światowy Dzień Świadomości Autyzmu', tag: 'world', desc: 'Jeden z najważniejszych dni w roku — okazja do rozmowy o spektrum autyzmu (ASD), jego diagnozowaniu, wyzwaniach emocjonalnych oraz roli terapii i wsparcia środowiskowego. Cały kwiecień to miesiąc autyzmu.', highlight: true },
+      { month: '04', monthName: 'Kwiecień', date: '7 kwietnia', sortDate: '04-07', name: 'Światowy Dzień Zdrowia (WHO)', tag: 'world', desc: 'Coroczny dzień ustanowiony przez WHO, każdorazowo poświęcony innemu zagadnieniu zdrowia. Temat zmieniający się co roku — warto śledzić aktualny temat i dostosować do niego treść posta. W wielu edycjach zdrowie psychiczne było w centrum uwagi.', highlight: true },
+      { month: '04', monthName: 'Kwiecień', date: '11 kwietnia', sortDate: '04-11', name: 'Światowy Dzień Choroby Parkinsona', tag: 'world', desc: 'Choroba Parkinsona wiąże się z wysokim ryzykiem depresji i zaburzeń lękowych. Dobry moment na przedstawienie perspektywy psychologicznej w chorobach neurologicznych i roli wsparcia psychologicznego w neurologii.', highlight: false },
+      { month: '04', monthName: 'Kwiecień', date: 'cały miesiąc', sortDate: '04-01', name: 'Miesiąc Świadomości Stresu (Stress Awareness Month)', tag: 'world', desc: 'Kwiecień to miesiąc globalnej edukacji o stresie — jego mechanizmach, skutkach długotrwałego stresu dla ciała i umysłu oraz metodach radzenia sobie. Idealna seria postów przez cały miesiąc.', highlight: true },
+      { month: '04', monthName: 'Kwiecień', date: 'cały miesiąc', sortDate: '04-03', name: 'Miesiąc Świadomości PTSD', tag: 'world', desc: 'Kwiecień jest również miesiącem świadomości zespołu stresu pourazowego. Okazja do edukacji o traumie, jej objawach, metodach leczenia (EMDR, terapia traumy) i wsparciu dla weteranów oraz ofiar przemocy.', highlight: false },
+      { month: '05', monthName: 'Maj', date: '1 maja', sortDate: '05-01', name: 'Dzień Świadomości Pracowniczych Zaburzeń Psychicznych', tag: 'world', desc: 'Zbiega się z Świętem Pracy — dobry moment na rozmowę o zdrowiu psychicznym w miejscu pracy: wypaleniu zawodowym, mobbingu, work-life balance i psychologicznym bezpieczeństwie w środowisku pracy.', highlight: false },
+      { month: '05', monthName: 'Maj', date: '5 maja', sortDate: '05-05', name: 'Dzień Rozwiązywania Problemów Alkoholowych / Europejski Dzień bez Tytoniu', tag: 'eu', desc: 'Uzależnienia i zdrowie psychiczne są ściśle powiązane. Okazja do rozmowy o podwójnych diagnozach, współwystępowaniu uzależnień i zaburzeń psychicznych oraz o leczeniu w psychiatrii uzależnień.', highlight: false },
+      { month: '05', monthName: 'Maj', date: '10 maja', sortDate: '05-10', name: 'Dzień Świadomości Zdrowia Psychicznego (Mental Health Awareness Day – UK)', tag: 'world', desc: 'Obchodzony głównie w Wielkiej Brytanii, jednak coraz bardziej globalny. Dobra okazja do szerszego postu o dostępności usług psychiatrycznych i psychologicznych w Polsce.', highlight: false },
+      { month: '05', monthName: 'Maj', date: '17 maja', sortDate: '05-17', name: 'Światowy Dzień Przeciw Homofobii, Transfobii i Bifobii (IDAHOBIT)', tag: 'world', desc: 'Osoby LGBTQ+ są grupą wysokiego ryzyka zaburzeń psychicznych z powodu stygmatyzacji i dyskryminacji. Ważna okazja do mówienia o kompetentnej, afirmatywnej psychoterapii i wsparciu dla osób nieheteronormatywnych.', highlight: false },
+      { month: '05', monthName: 'Maj', date: '28 maja', sortDate: '05-28', name: 'Dzień Świadomości Depresji Sezonowej', tag: 'world', desc: 'Chociaż SAD kojarzy się z zimą, maj to dobry moment na podsumowanie sezonu i edukację na temat mechanizmów sezonowych zmian nastroju oraz profilaktyki.', highlight: false },
+      { month: '05', monthName: 'Maj', date: 'cały miesiąc', sortDate: '05-01', name: 'Miesiąc Świadomości Zdrowia Psychicznego (Mental Health Awareness Month)', tag: 'world', desc: 'Maj to globalnie najważniejszy miesiąc dla świadomości zdrowia psychicznego — szczególnie w USA, ale obserwowany na całym świecie. Idealny na intensywną kampanię edukacyjną przez cały miesiąc.', highlight: true },
+      { month: '05', monthName: 'Maj', date: 'cały miesiąc', sortDate: '05-02', name: 'Europejski Tydzień Świadomości Depresji (zmienne daty)', tag: 'eu', desc: 'Inicjatywa Europejskiego Stowarzyszenia Psychiatrów (EPA) — tydzień poświęcony edukacji na temat depresji, jej rozpoznawania i leczenia. Data zmienia się co roku, warto śledzić harmonogram.', highlight: false },
+      { month: '06', monthName: 'Czerwiec', date: '5 czerwca', sortDate: '06-05', name: 'Dzień Świadomości Zaburzeń Osobowości', tag: 'world', desc: 'Nieoficjalny, ale popularny w mediach społecznościowych dzień poświęcony zaburzeniom osobowości. Okazja do edukacji o typach zaburzeń osobowości, stygmatyzacji i możliwościach terapeutycznych (DBT, schema therapy).', highlight: false },
+      { month: '06', monthName: 'Czerwiec', date: '18 czerwca', sortDate: '06-18', name: 'Dzień Świadomości Schizofrenii', tag: 'world', desc: 'Jeden z najbardziej stygmatyzowanych tematów w psychiatrii. Post edukacyjny na temat tego, czym naprawdę jest schizofrenia, obalający mity medialne, może mieć duże znaczenie społeczne.', highlight: true },
+      { month: '06', monthName: 'Czerwiec', date: '21 czerwca', sortDate: '06-21', name: 'Dzień Ojca (Polska)', tag: 'pl', desc: 'Okazja do rozmowy o zdrowiu psychicznym mężczyzn i ojców — wykluczeniu emocjonalnym mężczyzn, trudnościach w szukaniu pomocy, wypaleniu rodzicielskim u ojców i depresji poporodowej u mężczyzn.', highlight: false },
+      { month: '06', monthName: 'Czerwiec', date: 'cały miesiąc', sortDate: '06-01', name: 'Miesiąc Świadomości Zdrowia Psychicznego Mężczyzn', tag: 'world', desc: 'Czerwiec to Movember poza sezonem — czas na rozmowę o tym, dlaczego mężczyźni rzadziej szukają pomocy psychologicznej, o wyższym wskaźniku samobójstw wśród mężczyzn i o barierach kulturowych w dostępie do wsparcia.', highlight: true },
+      { month: '06', monthName: 'Czerwiec', date: 'cały miesiąc', sortDate: '06-02', name: 'Miesiąc Świadomości PTSD (USA)', tag: 'world', desc: 'W USA czerwiec jest oficjalnym miesiącem świadomości PTSD. Dobrze połączyć z tematyką polską — trauma wojenna, przemoc, wypadki i ich następstwa psychologiczne.', highlight: false },
+      { month: '07', monthName: 'Lipiec', date: '1–7 lipca', sortDate: '07-01', name: 'Światowy Tydzień Karmienia Piersią / Zdrowie psychiczne matek', tag: 'world', desc: 'Choć dotyczy karmienia, to doskonały moment do rozmowy o zdrowiu psychicznym matek w pierwszym roku życia dziecka: depresja poporodowa, lęk macierzyński, psychoza poporodowa i dostępność wsparcia.', highlight: false },
+      { month: '07', monthName: 'Lipiec', date: '24 lipca', sortDate: '07-24', name: 'Dzień Świadomości Uzależnień (International Self-Care Day)', tag: 'world', desc: 'Dzień samoopieki i profilaktyki uzależnień. Warto poruszyć temat zdrowego samoleczenia, w odróżnieniu od mechanizmów uzależnieniowych, i zachęcić do profesjonalnego wsparcia.', highlight: false },
+      { month: '07', monthName: 'Lipiec', date: 'cały miesiąc', sortDate: '07-01', name: 'Miesiąc Edukacji na temat Zaburzeń Nastroju', tag: 'world', desc: 'Lipiec bywa świadomie wybrany jako miesiąc edukacji o zaburzeniach nastroju — w tym depresji i chorobie afektywnej dwubiegunowej. Lato paradoksalnie bywa trudnym czasem dla osób z CHAD.', highlight: false },
+      { month: '08', monthName: 'Sierpień', date: '12 sierpnia', sortDate: '08-12', name: 'Międzynarodowy Dzień Młodzieży', tag: 'world', desc: 'Tematyka zdrowia psychicznego młodzieży: presja społeczna, media społecznościowe, bullying, stres egzaminacyjny, tożsamość. Jeden z kluczowych dni do postów skierowanych do rodziców i wychowawców.', highlight: false },
+      { month: '08', monthName: 'Sierpień', date: '31 sierpnia', sortDate: '08-31', name: 'Światowy Dzień Świadomości Leczenia Uzależnień', tag: 'world', desc: 'Dzień poświęcony osobom wychodzącym z uzależnień i ich rodzinom. Warto mówić o sukcesach leczenia, możliwościach rehabilitacji i destigmatyzacji uzależnień jako chorób.', highlight: false },
+      { month: '08', monthName: 'Sierpień', date: 'cały miesiąc', sortDate: '08-01', name: 'Miesiąc Świadomości Psychozy Poporodowej', tag: 'world', desc: 'Rzadko omawiane, a groźne zaburzenie — psychoza poporodowa. Edukacja w sierpniu, przed jesiennym powrotem pacjentek po urodzeniu dziecka, może być szczególnie wartościowa.', highlight: false },
+      { month: '09', monthName: 'Wrzesień', date: '10 września', sortDate: '09-10', name: 'Światowy Dzień Zapobiegania Samobójstwom (WHO)', tag: 'world', desc: 'Jeden z najważniejszych dni w psychiatrii. Dedykowany profilaktyce suicydologicznej, edukacji dotyczącej czynników ryzyka i ochronnych, zasadom bezpiecznej komunikacji (safe messaging). Wymagający tematycznie, ale kluczowy dla Centrum Zdrowia Psychicznego.', highlight: true },
+      { month: '09', monthName: 'Wrzesień', date: '13 września', sortDate: '09-13', name: 'Dzień Rody — Dzień Rodzicielstwa Bliskości', tag: 'pl', desc: 'Okazja do rozmowy o więzi rodzic–dziecko, teorii przywiązania, znaczeniu wczesnych relacji dla zdrowia psychicznego i regulacji emocjonalnej.', highlight: false },
+      { month: '09', monthName: 'Wrzesień', date: '21 września', sortDate: '09-21', name: 'Światowy Dzień Choroby Alzheimera', tag: 'world', desc: 'Choroba Alzheimera niesie ze sobą ogromne konsekwencje psychologiczne — zarówno dla pacjentów, jak i opiekunów. Warto mówić o wsparciu psychologicznym dla rodzin i depresji u opiekunów.', highlight: true },
+      { month: '09', monthName: 'Wrzesień', date: '23 września', sortDate: '09-23', name: 'Dzień Świadomości Zaburzeń Afektywnych Dwubiegunowych', tag: 'world', desc: 'Zaburzenie afektywne dwubiegunowe jest często mylnie rozumiane. Doskonała okazja na edukację — czym różni się od typowych wahań nastroju, jak wygląda leczenie i jak żyć z diagnozą CHAD.', highlight: true },
+      { month: '09', monthName: 'Wrzesień', date: 'cały miesiąc', sortDate: '09-01', name: 'Miesiąc Świadomości Samobójstw (National Suicide Prevention Month)', tag: 'world', desc: 'Wrzesień to globalnie miesiąc poświęcony profilaktyce suicydologicznej — seria postów przez cały miesiąc zakończona Światowym Dniem 10 września. Ważny i wymagający miesiąc, ale niezwykle potrzebny.', highlight: false },
+      { month: '09', monthName: 'Wrzesień', date: 'cały miesiąc', sortDate: '09-02', name: 'Miesiąc Świadomości Uzależnień od Substancji', tag: 'world', desc: 'Wrzesień jest również poświęcony uzależnieniom od substancji psychoaktywnych — alkohol, narkotyki, leki. Okazja do edukacji o podwójnych diagnozach i dostępności leczenia.', highlight: false },
+      { month: '10', monthName: 'Październik', date: '1 października', sortDate: '10-01', name: 'Międzynarodowy Dzień Lekarza', tag: 'prof', desc: 'Dzień poświęcony wszystkim lekarzom — w tym psychiatrom. Warto docenić pracę lekarzy psychiatrów, mówić o wypaleniu zawodowym w zawodach medycznych i potrzebie wsparcia dla samych pomagaczy.', highlight: false },
+      { month: '10', monthName: 'Październik', date: '2 października', sortDate: '10-02', name: 'Dzień Świadomości Zarządzania Gniewem', tag: 'world', desc: 'Okazja do rozmowy o emocjach trudnych — regulacji gniewu, jego roli adaptacyjnej i destrukcyjnej, technikach zarządzania złością w terapii i w codziennym życiu.', highlight: false },
+      { month: '10', monthName: 'Październik', date: '4 października', sortDate: '10-04', name: 'Dzień Psychiatrii Środowiskowej (PL)', tag: 'pl', desc: 'Dzień promujący psychiatrię środowiskową i centra zdrowia psychicznego w Polsce. Bezpośrednio związany z profilem Centrum — można przedstawić model CZP, korzyści leczenia środowiskowego i dostępność pomocy.', highlight: true },
+      { month: '10', monthName: 'Październik', date: '10 października', sortDate: '10-10', name: 'Światowy Dzień Zdrowia Psychicznego (WHO)', tag: 'world', desc: 'NAJWAŻNIEJSZY dzień w kalendarzu Centrum Zdrowia Psychicznego. Ustanowiony przez WHO w 1992 r. — każdego roku z innym hasłem przewodnim. To dzień globalnej mobilizacji dla zdrowia psychicznego. Wymagający planowania z wyprzedzeniem i szerokiego zasięgu.', highlight: true },
+      { month: '10', monthName: 'Październik', date: '11 października', sortDate: '10-11', name: 'Światowy Dzień Dziewcząt', tag: 'world', desc: 'Okazja do rozmowy o specyfice zdrowia psychicznego dziewcząt i młodych kobiet — presja wizerunkowa, zaburzenia jedzenia, bullying cybernetyczny, wcześniejsza diagnoza zaburzeń emocjonalnych.', highlight: false },
+      { month: '10', monthName: 'Październik', date: '12 października', sortDate: '10-12', name: 'Dzień Świadomości Artritis / Choroby Przewlekłe a Psychika', tag: 'world', desc: 'Choroby przewlekłe są silnie powiązane ze zdrowiem psychicznym. Warto mówić o roli psychologa w rehabilitacji i adaptacji do życia z chorobą przewlekłą.', highlight: false },
+      { month: '10', monthName: 'Październik', date: '13 października', sortDate: '10-13', name: 'Dzień Świadomości Dysocjacji (DID Awareness Day)', tag: 'world', desc: 'Zaburzenie dysocjacyjne tożsamości jest jednym z najmniej rozumianych zaburzeń psychicznych. Post edukacyjny może przyczynić się do destigmatyzacji i lepszego rozumienia traumy dysocjacyjnej.', highlight: false },
+      { month: '10', monthName: 'Październik', date: '15 października', sortDate: '10-15', name: 'Dzień Świadomości Poronienia i Straty Perinatalnej', tag: 'world', desc: 'Strata perinatalna jest traumatycznym doświadczeniem mogącym prowadzić do depresji, PTSD i powikłanej żałoby. Ważny temat dla zdrowia psychicznego matek i ojców po stracie dziecka.', highlight: true },
+      { month: '10', monthName: 'Październik', date: '18 października', sortDate: '10-18', name: 'Światowy Dzień Menopauzy', tag: 'world', desc: 'Menopauza wiąże się z istotnymi zmianami w zdrowiu psychicznym kobiet — zaburzenia nastroju, lęk, zaburzenia snu. Dobry temat dla treści skierowanych do kobiet 45–60 lat.', highlight: false },
+      { month: '10', monthName: 'Październik', date: '20 października', sortDate: '10-20', name: 'Dzień Psychologa / Ogólnopolski Tydzień Zdrowia Psychicznego', tag: 'pl', desc: 'Polskie obchody związane z zawodem psychologa i dostępnością pomocy psychologicznej. Idealny dzień do przedstawienia oferty Centrum i podkreślenia roli psychologów i psychoterapeutów.', highlight: true },
+      { month: '10', monthName: 'Październik', date: '23 października', sortDate: '10-23', name: 'Dzień Świadomości Choroby Afektywnej Dwubiegunowej (europejski)', tag: 'eu', desc: 'Europejskie obchody świadomości CHAD w październiku. Uzupełnienie wrześniowego Dnia Świadomości ZAD — dobry moment na informacje o farmakoterapii i wsparciu środowiskowym.', highlight: false },
+      { month: '10', monthName: 'Październik', date: 'cały miesiąc', sortDate: '10-01', name: 'Miesiąc Świadomości ADHD', tag: 'world', desc: 'Październik to globalny Miesiąc Świadomości ADHD. Wiele okazji do edukacji: ADHD u dorosłych, kobiet, diagnozowanie po 18. roku życia, związek z depresją i lękiem. Bardzo aktualny temat.', highlight: true },
+      { month: '10', monthName: 'Październik', date: 'cały miesiąc', sortDate: '10-02', name: 'Miesiąc Świadomości Śródbłonkowego Wirusa Herpes / Zdrowie Psychiczne i Stygmat', tag: 'world', desc: 'Październik to miesiąc walki ze stygmatem w zdrowiu psychicznym. Dobry czas na kampanię informacyjną obalającą mity o zaburzeniach psychicznych i leczeniu psychiatrycznym.', highlight: false },
+      { month: '11', monthName: 'Listopad', date: '1–30 listopada', sortDate: '11-01', name: 'Movember — Miesiąc Zdrowia Psychicznego Mężczyzn', tag: 'world', desc: 'Movember to globalna kampania skupiająca się na zdrowiu mężczyzn, w tym zdrowiu psychicznym. Samobójstwa mężczyzn, bariery w szukaniu pomocy, depresja u mężczyzn — temat niezwykle ważny i wciąż zbyt rzadko poruszany.', highlight: true },
+      { month: '11', monthName: 'Listopad', date: '14 listopada', sortDate: '11-14', name: 'Światowy Dzień Cukrzycy', tag: 'world', desc: 'Cukrzyca i zdrowie psychiczne są powiązane — depresja u chorych na cukrzycę jest 2–3× częstsza niż w populacji ogólnej. Okazja do rozmowy o psychodiabetologii i roli wsparcia emocjonalnego w leczeniu chorób przewlekłych.', highlight: false },
+      { month: '11', monthName: 'Listopad', date: '19 listopada', sortDate: '11-19', name: 'Dzień Praw Dziecka / Dzień Zdrowia Psychicznego Dzieci', tag: 'world', desc: 'Blisko Dnia Praw Dziecka (20 XI) — doskonały moment do rozmowy o zdrowiu psychicznym dzieci, wczesnej interwencji psychiatrycznej, dostępności terapii dla dzieci i pracy z rodziną.', highlight: false },
+      { month: '11', monthName: 'Listopad', date: '25 listopada', sortDate: '11-25', name: 'Dzień Eliminacji Przemocy wobec Kobiet (ONZ)', tag: 'world', desc: 'Przemoc wobec kobiet ma głębokie konsekwencje dla zdrowia psychicznego. Warto mówić o PTSD po traumie przemocy, pracy z osobami ocalałymi i dostępności wsparcia kryzysowego.', highlight: true },
+      { month: '11', monthName: 'Listopad', date: 'cały miesiąc', sortDate: '11-02', name: 'Miesiąc Świadomości Alzheimera (Europa)', tag: 'eu', desc: 'Europejskie obchody poświęcone demencji i chorobie Alzheimera. Okazja do edukacji o psychologicznym wsparciu opiekunów i osób z diagnozą.', highlight: false },
+      { month: '12', monthName: 'Grudzień', date: '1 grudnia', sortDate: '12-01', name: 'Światowy Dzień AIDS', tag: 'world', desc: 'Osoby żyjące z HIV/AIDS mierzą się z poważnymi wyzwaniami dla zdrowia psychicznego — stygmatyzacja, depresja, lęk. Okazja do rozmowy o dostępie do wsparcia psychologicznego w chorobach przewlekłych i stygmatyzujących.', highlight: false },
+      { month: '12', monthName: 'Grudzień', date: '3 grudnia', sortDate: '12-03', name: 'Dzień Osób z Niepełnosprawnościami (ONZ)', tag: 'world', desc: 'Zdrowie psychiczne osób z niepełnosprawnościami fizycznymi, intelektualnymi i ruchowymi — wyzwania, dostęp do wsparcia i rola psychologii rehabilitacyjnej.', highlight: false },
+      { month: '12', monthName: 'Grudzień', date: '18 grudnia', sortDate: '12-18', name: 'Dzień Walki z Samotnością w Święta', tag: 'world', desc: 'Święta Bożego Narodzenia mogą być trudnym czasem dla osób w kryzysie, samotnych lub w żałobie. Okazja do wrażliwego postu o świątecznej depresji, samotności i dostępności wsparcia.', highlight: true },
+      { month: '12', monthName: 'Grudzień', date: 'cały miesiąc', sortDate: '12-01', name: 'Zimowy Miesiąc Świadomości Zaburzeń Sezonowych (SAD)', tag: 'world', desc: 'Grudzień to szczyt zachorowań na Sezonowe Zaburzenia Afektywne. Idealny moment na serię postów o SAD — objawach, leczeniu fototerapią, farmakoterapii i psychoterapii w zaburzeniach sezonowych.', highlight: false },
+    ];
+
+    // State
+    let currentMonth = 'all';
+    let currentSearch = '';
+    let activeTags = new Set();
+    let favorites = JSON.parse(localStorage.getItem('mentalHealthFavs') || '[]');
+    let expandedCards = new Set();
+
+    // Theme management
+    function initTheme() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        updateThemeBtn(true);
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        updateThemeBtn(false);
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        updateThemeBtn(true);
+      }
+    }
+
+    function updateThemeBtn(isDark) {
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+      if (isDark) {
+        icon.textContent = '☀️';
+        text.textContent = 'Tryb jasny';
+      } else {
+        icon.textContent = '🌙';
+        text.textContent = 'Tryb ciemny';
+      }
+    }
+
+    // Helper functions
+    function getTagHtml(tag) {
+      const tags = {
+        world: '<span class="tag tag-world">Światowy</span>',
+        eu: '<span class="tag tag-eu">Europejski</span>',
+        pl: '<span class="tag tag-pl">PL</span>',
+        prof: '<span class="tag tag-prof">Zawód</span>',
+      };
+      return tags[tag] || '';
+    }
+
+    function getDotColor(tag) {
+      const colors = {
+        world: '#3060c0',
+        eu: '#c03060',
+        pl: '#307840',
+        prof: '#906010',
+      };
+      return colors[tag] || 'var(--teal)';
+    }
+
+    function isFav(id) {
+      return favorites.includes(id);
+    }
+
+    function toggleFav(id) {
+      const idx = favorites.indexOf(id);
+      if (idx > -1) {
+        favorites.splice(idx, 1);
+        showToast('Usunięto z zapisanych dni');
+      } else {
+        favorites.push(id);
+        showToast('Dodano do zapisanych dni ⭐');
+      }
+      localStorage.setItem('mentalHealthFavs', JSON.stringify(favorites));
+      updateFavCount();
+      render();
+    }
+
+    function updateFavCount() {
+      document.getElementById('favCount').textContent = favorites.length;
+      document.getElementById('savedCount').textContent = favorites.length;
+    }
+
+    function generateICS(event) {
+      // Parse date
+      const [day, monthName] = event.date.split(' ');
+      const monthMap = {
+        'stycznia': '01', 'lutego': '02', 'marca': '03', 'kwietnia': '04', 'maja': '05', 'czerwca': '06',
+        'lipca': '07', 'sierpnia': '08', 'września': '09', 'października': '10', 'listopada': '11', 'grudnia': '12'
+      };
+
+      let dtStart = '2025';
+      if (monthMap[monthName]) {
+        dtStart += monthMap[monthName];
+        const d = day.replace(/[^0-9]/g, '');
+        dtStart += d.padStart(2, '0');
+      } else {
+        dtStart += event.month + '01';
+      }
+
+      const desc = event.desc.replace(/[^\w\s-]/g, '').substring(0, 50);
+
+      const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:${dtStart}
+DTEND;VALUE=DATE:${dtStart}
+SUMMARY:${event.name}
+DESCRIPTION:${event.desc}
+CATEGORIES:Zdrowie psychiczne
+END:VEVENT
+END:VCALENDAR`;
+
+      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `wydarzenie-${event.sortDate}.ics`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast('Kalendarz pobrany 📅');
+    }
+
+    // Render functions
+    function render() {
+      let filtered = data;
+
+      // Month filter
+      if (currentMonth !== 'all') {
+        filtered = filtered.filter(d => d.month === currentMonth);
+      }
+
+      // Tag filter
+      if (activeTags.size > 0) {
+        filtered = filtered.filter(d => activeTags.has(d.tag));
+      }
+
+      // Search filter
+      if (currentSearch.trim()) {
+        const q = currentSearch.toLowerCase();
+        filtered = filtered.filter(d =>
+          d.name.toLowerCase().includes(q) ||
+          d.desc.toLowerCase().includes(q) ||
+          d.date.toLowerCase().includes(q)
+        );
+      }
+
+      // Favorites view
+      const showFavsOnly = document.querySelector('.fav-btn.active');
+      if (showFavsOnly) {
+        filtered = filtered.filter(d => isFav(d.sortDate));
+      }
+
+      document.getElementById('visibleCount').textContent = filtered.length;
+      document.getElementById('totalCount').textContent = data.length;
+
+      const noResults = document.getElementById('noResults');
+      if (filtered.length === 0) {
+        noResults.classList.add('show');
+        document.getElementById('desktopView').innerHTML = '';
+        document.getElementById('mobileView').innerHTML = '';
+        return;
+      }
+
+      noResults.classList.remove('show');
+
+      // Group by month
+      const months = {};
+      filtered.forEach(item => {
+        if (!months[item.month]) months[item.month] = { name: item.monthName, items: [] };
+        months[item.month].items.push(item);
+      });
+
+      renderDesktop(months);
+      renderMobile(months);
+    }
+
+    function renderDesktop(months) {
+      let globalLp = 1;
+      let html = '';
+
+      Object.keys(months).sort().forEach(m => {
+        const group = months[m];
+        html += `
+      <div class="month-section" data-month="${m}">
+        <div class="month-header">
+          <span class="month-number">${parseInt(m, 10).toString().padStart(2, '0')}</span>
+          <span class="month-name">${group.name}</span>
+          <span class="month-count">${group.items.length} ${group.items.length === 1 ? 'dzień' : 'dni'}</span>
+        </div>
+        <div class="month-divider"></div>
+        <table>
+          <thead>
+            <tr>
+              <th>Lp.</th>
+              <th>Data</th>
+              <th>Nazwa Święta / Dnia</th>
+              <th>Opis i wskazówki</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+        group.items.forEach(item => {
+          const favClass = isFav(item.sortDate) ? 'active' : '';
+          html += `
+        <tr class="${item.highlight ? 'highlight' : ''}" data-id="${item.sortDate}">
+          <td class="lp">${globalLp++}</td>
+          <td class="date-cell">
+            <div class="date-badge">
+              <span class="date-dot" style="background:${getDotColor(item.tag)}"></span>
+              <span class="date-text">${item.date}</span>
+            </div>
+          </td>
+          <td class="name-cell">
+            ${item.name}
+            ${getTagHtml(item.tag)}
+            <div class="row-actions">
+              <button class="icon-btn ${favClass}" onclick="toggleFav('${item.sortDate}')" title="Dodaj do ulubionych">
+                ${isFav(item.sortDate) ? '⭐ Usuń' : '☆ Zapisz'}
+              </button>
+              <button class="icon-btn" onclick="generateICS(${JSON.stringify(item).replace(/"/g, '&quot;')})" title="Dodaj do kalendarza">
+                📅 Eksportuj
+              </button>
+            </div>
+          </td>
+          <td class="desc-cell">${item.desc}</td>
+        </tr>
+      `;
+        });
+
+        html += `</tbody></table></div>`;
+      });
+
+      document.getElementById('desktopView').innerHTML = html;
+    }
+
+    function renderMobile(months) {
+      let html = '';
+
+      Object.keys(months).sort().forEach(m => {
+        const group = months[m];
+        html += `<div class="month-section" data-month="${m}">
+      <div class="month-header">
+        <span class="month-number">${parseInt(m, 10).toString().padStart(2, '0')}</span>
+        <span class="month-name">${group.name}</span>
+        <span class="month-count">${group.items.length}</span>
+      </div>
+      <div class="month-divider"></div>
+    `;
+
+        group.items.forEach(item => {
+          const isExpanded = expandedCards.has(item.sortDate);
+          const favClass = isFav(item.sortDate) ? 'active' : '';
+
+          html += `
+        <div class="event-card ${isExpanded ? 'expanded' : ''}" onclick="toggleCard('${item.sortDate}')">
+          <div class="expand-icon">▼</div>
+          <div class="card-header">
+            <div class="card-date">
+              <span class="date-dot" style="background:${getDotColor(item.tag)}"></span>
+              ${item.date}
+            </div>
+          </div>
+          <div class="card-title">${item.name}</div>
+          <div class="card-tags">${getTagHtml(item.tag)}</div>
+          <div class="card-desc">${item.desc}</div>
+          <div class="card-actions" onclick="event.stopPropagation()">
+            <button class="card-btn ${favClass}" onclick="toggleFav('${item.sortDate}')">
+              ${isFav(item.sortDate) ? '⭐ Zapisano' : '☆ Zapisz'}
+            </button>
+            <button class="card-btn primary" onclick="generateICS(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+              📅 Kalendarz
+            </button>
+          </div>
+        </div>
+      `;
+        });
+
+        html += `</div>`;
+      });
+
+      document.getElementById('mobileView').innerHTML = html;
+    }
+
+    function toggleCard(id) {
+      if (expandedCards.has(id)) {
+        expandedCards.delete(id);
+      } else {
+        expandedCards.add(id);
+      }
+      render();
+    }
+
+    // Filter functions
+    function filterMonth(month, btn) {
+      currentMonth = month;
+      document.querySelectorAll('#monthTabs .tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Remove fav filter if active
+      document.querySelector('.fav-btn').classList.remove('active');
+
+      render();
+    }
+
+    function toggleTag(tag, btn) {
+      if (activeTags.has(tag)) {
+        activeTags.delete(tag);
+        btn.classList.remove('active');
+      } else {
+        activeTags.add(tag);
+        btn.classList.add('active');
+      }
+      render();
+    }
+
+    function resetFilters() {
+      currentMonth = 'all';
+      currentSearch = '';
+      activeTags.clear();
+      expandedCards.clear();
+
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.all-btn').classList.add('active');
+      document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.fav-btn').classList.remove('active');
+
+      render();
+    }
+
+    // Favorites modal
+    function showFavorites() {
+      const btn = document.querySelector('.fav-btn');
+      if (btn.classList.contains('active')) {
+        btn.classList.remove('active');
+        render();
+        return;
+      }
+
+      const modal = document.getElementById('favModal');
+      const list = document.getElementById('favList');
+
+      if (favorites.length === 0) {
+        list.innerHTML = '<div class="empty-favs">Nie masz jeszcze zapisanych dni.<br>Kliknij ⭐ przy wydarzeniu, aby dodać.</div>';
+      } else {
+        let html = '';
+        const favItems = data.filter(d => favorites.includes(d.sortDate)).sort((a, b) => a.sortDate.localeCompare(b.sortDate));
+
+        favItems.forEach(item => {
+          html += `
+        <div class="fav-item">
+          <div class="fav-date">${item.date.replace(' ', '<br>')}</div>
+          <div class="fav-content">
+            <div class="fav-title">${item.name}</div>
+            <div style="font-size: 12px; color: var(--warm-mid); margin-top: 4px">${item.desc.substring(0, 60)}...</div>
+          </div>
+          <button class="fav-remove" onclick="removeFav('${item.sortDate}')" title="Usuń">🗑️</button>
+        </div>
+      `;
+        });
+        list.innerHTML = html;
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeFavorites(e) {
+      if (!e || e.target === document.getElementById('favModal')) {
+        document.getElementById('favModal').classList.remove('active');
+      }
+    }
+
+    function removeFav(id) {
+      toggleFav(id);
+      showFavorites(); // Refresh modal
+    }
+
+    // Toast notifications
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('hiding');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', debounce((e) => {
+      currentSearch = e.target.value;
+      render();
+    }, 300));
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
+    self.addEventListener('install', e => {
+      e.waitUntil(self.skipWaiting());
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    });
+  `)).catch(() => console.log('SW not registered'));
+    }
+
+    // Init
+    initTheme();
+    updateFavCount();
+    render();
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeFavorites();
+        document.querySelectorAll('.event-card.expanded').forEach(c => {
+          const id = c.getAttribute('onclick').match(/'([^']+)'/)[1];
+          expandedCards.delete(id);
+        });
+        render();
+      }
+      if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        document.getElementById('searchInput').focus();
+      }
+    });
+  </script>
+</body>
+
+</html>
